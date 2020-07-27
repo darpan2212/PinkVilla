@@ -6,6 +6,7 @@ import 'package:pinkvilla/bloc/bloc.dart';
 import 'package:pinkvilla/config/assets.dart';
 import 'package:pinkvilla/config/dimen.dart';
 import 'package:pinkvilla/repos/models/video.dart';
+import 'package:pinkvilla/utils/logger.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -13,9 +14,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  PageController pageController;
+
   @override
   void initState() {
+    pageController = PageController(
+      keepPage: true,
+    );
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -41,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return SafeArea(
             child: Scaffold(
               body: PageView.builder(
+                controller: pageController,
                 scrollDirection: Axis.vertical,
                 itemBuilder: (context, position) {
                   Video videoDetail = state.videos[position];
@@ -50,6 +63,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: <Widget>[
                         AppVideoPlayer(
                           url: videoDetail.url,
+                          onVideoFinish: () {
+                            Logger.printObj(pageController.page);
+                            if ((pageController.page.toInt() + 1) <
+                                state.videos.length) {
+                              pageController.nextPage(
+                                duration: Duration(
+                                  milliseconds: 100,
+                                ),
+                                curve: Curves.linear,
+                              );
+                            }
+                          },
                         ),
                         onScreenControls(videoDetail),
                       ],
