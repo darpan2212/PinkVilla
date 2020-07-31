@@ -2,12 +2,10 @@ import 'package:equatable/equatable.dart';
 import 'package:pinkvilla/repos/models/video.dart';
 
 abstract class VideoState extends Equatable {
-  final List<Video> videos;
-
-  const VideoState({this.videos});
+  const VideoState();
 
   @override
-  List<Object> get props => [videos];
+  List<Object> get props => [];
 }
 
 class VideoInitial extends VideoState {}
